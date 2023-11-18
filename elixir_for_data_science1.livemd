@@ -1,0 +1,63 @@
+# elixir_for_data_science1
+
+```elixir
+Mix.install([
+  {:explorer, "~> 0.7.1"},
+  {:vega_lite, "~> 0.1.8"},
+  {:kino, "~> 0.11.3"},
+  {:kino_vega_lite, "~> 0.1.11"},
+  {:kino_explorer, "~> 0.1.12"}
+])
+```
+
+## Section
+
+```elixir
+alias VegaLite, as: Vl
+```
+
+```elixir
+File.cwd!()
+```
+
+```elixir
+File.cd("/home/monke/0/dev/eksploracja_danych/learning_by_myself/")
+file_name = "mpg_raw.csv"
+file_path = File.cwd!() <> "/datasets/miles_per_gallon/" <> file_name
+mpg = Explorer.DataFrame.from_csv!(file_path)
+```
+
+```elixir
+mpg
+```
+
+<!-- livebook:{"attrs":{"chart_title":"miles per gallon","height":null,"layers":[{"active":true,"chart_type":"bar","color_field":"origin","color_field_aggregate":null,"color_field_bin":null,"color_field_scale_scheme":null,"color_field_type":"nominal","data_variable":"mpg","geodata_color":"blue","latitude_field":null,"longitude_field":null,"x_field":"displacement","x_field_aggregate":null,"x_field_bin":null,"x_field_scale_type":null,"x_field_type":"quantitative","y_field":"horsepower","y_field_aggregate":null,"y_field_bin":null,"y_field_scale_type":null,"y_field_type":"quantitative"}],"vl_alias":"Elixir.Vl","width":null},"chunks":null,"kind":"Elixir.KinoVegaLite.ChartCell","livebook_object":"smart_cell"} -->
+
+```elixir
+Vl.new(title: "miles per gallon")
+|> Vl.data_from_values(mpg, only: ["displacement", "horsepower", "origin"])
+|> Vl.mark(:bar)
+|> Vl.encode_field(:x, "displacement", type: :quantitative)
+|> Vl.encode_field(:y, "horsepower", type: :quantitative)
+|> Vl.encode_field(:color, "origin", type: :nominal)
+```
+
+```elixir
+Vl.new(width: 400)
+|> Vl.data_from_values(mpg)
+|> Vl.mark(:point)
+```
+
+```elixir
+mpg |> Explorer.DataFrame.shape()
+```
+
+<!-- livebook:{"attrs":{"chart_title":null,"height":null,"layers":[{"active":true,"chart_type":"bar","color_field":null,"color_field_aggregate":null,"color_field_bin":null,"color_field_scale_scheme":null,"color_field_type":null,"data_variable":"mpg","geodata_color":"blue","latitude_field":null,"longitude_field":null,"x_field":"name","x_field_aggregate":null,"x_field_bin":null,"x_field_scale_type":null,"x_field_type":"nominal","y_field":"cylinders","y_field_aggregate":null,"y_field_bin":null,"y_field_scale_type":null,"y_field_type":"quantitative"}],"vl_alias":"Elixir.Vl","width":null},"chunks":null,"kind":"Elixir.KinoVegaLite.ChartCell","livebook_object":"smart_cell"} -->
+
+```elixir
+Vl.new()
+|> Vl.data_from_values(mpg, only: ["name", "cylinders"])
+|> Vl.mark(:bar)
+|> Vl.encode_field(:x, "name", type: :nominal)
+|> Vl.encode_field(:y, "cylinders", type: :quantitative)
+```

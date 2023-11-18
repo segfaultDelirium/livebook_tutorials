@@ -1,0 +1,50 @@
+# explorer_tutorial
+
+```elixir
+Mix.install([
+  {:vega_lite, "~> 0.1.6"},
+  {:kino_vega_lite, "~> 0.1.10"},
+  {:nx, "~> 0.5"},
+  {:math, "~> 0.7.0"},
+  {:explorer, "~> 0.7.1"},
+  {:kino, "~> 0.11.3"},
+  {:kino_explorer, "~> 0.1.12"},
+  {:req, "~> 0.4.5"}
+])
+```
+
+## Section
+
+```elixir
+require Explorer.DataFrame, as: DF
+```
+
+```elixir
+{:ok, response} =
+  Req.get(
+    "https://raw.githubusercontent.com/westbaystars/first-pitch-homeruns/main/balls-in-play-2022.tsv"
+  )
+
+dataset = DF.load_csv!(response.body, delimiter: "\t")
+
+# file_path =
+#   "/home/monke/0/dev/eksploracja_danych/learning_by_myself/datasets/balls-in-play-2022.tsv"
+
+# dataset = DF.from_csv!(file_path, delimiter: "\t")
+```
+
+```elixir
+grouped =
+  dataset
+  |> DF.lazy()
+  |> DF.filter(col("Pitches") == 1 and col("Result") == "home-run")
+  |> DF.group_by(["Player", "Team"])
+  |> DF.summarise(Result_count: count(col("Result")))
+```
+
+```elixir
+grouped
+|> DF.rename(Result_count: "HR")
+|> DF.arrange(desc: col("HR"))
+|> DF.head(10)
+```
